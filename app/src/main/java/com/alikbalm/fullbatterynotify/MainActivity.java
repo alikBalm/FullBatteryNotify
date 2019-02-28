@@ -1,8 +1,7 @@
 package com.alikbalm.fullbatterynotify;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.support.constraint.ConstraintLayout;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,11 +10,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    Button start, stop, status, play, pause;
+    Button start, stop, status, browse_track;
     static TextView textStatus, textPercent, statusText;
-    //ConstraintLayout constraint;
 
-    MediaPlayer mediaPlayer;
+
+    // тут нужно сохранить Uri файла который выбрал ользователь в SharedPreferences
+    // чтоб при перезагрузке он сохранялся
+
+
 
 
     @Override
@@ -23,24 +25,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // страртуем сервис при запуске приложения, после чего пользователь
-        // может выходить из приложения, а служба будет работать в фоне
-        //startService(new Intent(MainActivity.this,MyService.class));
-
-        //constarint = (ConstraintLayout) findViewById(R.id.constarint);
-
-//        mediaPlayer = MediaPlayer.create(getApplicationContext(),R.raw.batareya_sveta);
-
-
-
-
         getSupportActionBar().hide();
 
         start = findViewById(R.id.start);
         stop = findViewById(R.id.stop);
         status = findViewById(R.id.status);
-        play = findViewById(R.id.play);
-        pause = findViewById(R.id.pause);
+        browse_track = findViewById(R.id.browse_track);
 
         statusText = findViewById(R.id.statusText);
 
@@ -50,9 +40,6 @@ public class MainActivity extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
-                //statusText.setText("Start Service");
                 startService(new Intent(MainActivity.this,MyService.class));
             }
         });
@@ -60,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //statusText.setText("Stop Service");
                 stopService(new Intent(MainActivity.this,MyService.class));
             }
         });
@@ -71,34 +56,31 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String serviceStatus = MyService.myServiceIsActive ? "Active" : "Inactive";
                 statusText.setText("Service is " + serviceStatus);
-
             }
         });
 
-        play.setOnClickListener(new View.OnClickListener() {
+        browse_track.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (mediaPlayer!=null ) mediaPlayer.stop();
-
-                mediaPlayer = MediaPlayer.create(MainActivity.this,R.raw.facebook_ringtone_pop);
-                mediaPlayer.start();
-
+                Intent browse = new Intent(Intent.ACTION_GET_CONTENT);
+                browse.setType("audio/*");
+                startActivityForResult(browse,1);
 
             }
         });
 
-        pause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                if (mediaPlayer!=null ) {mediaPlayer.stop();}
-                else {
-                    Log.i(" mediaplayer stop", " == null");
-                }
+    }
 
-            }
-        });
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        if (resultCode == RESULT_OK){
+
+            Uri uri= data.getData();
+            Log.i("Data", uri.toString());
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

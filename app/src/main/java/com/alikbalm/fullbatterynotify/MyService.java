@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.IBinder;
 import android.util.Log;
@@ -16,7 +17,9 @@ public class MyService extends Service {
 
     MediaPlayer mp;
     static boolean myServiceIsActive = false;
-    int idRaw =R.raw.batareya_sveta;
+    int idRaw = R.raw.batareya_sveta;
+
+    Uri UserChoiseAudioUri;
 //    boolean charging = false;
 
     public MyService() {
@@ -28,7 +31,7 @@ public class MyService extends Service {
         //регистрируем ресивер
         this.registerReceiver(this.mBatInfoReciever,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
-        mp = MediaPlayer.create(getApplicationContext(),R.raw.facebook_ringtone_pop);
+        initMediaPlayer();
 
 
         super.onCreate();
@@ -37,6 +40,8 @@ public class MyService extends Service {
     @Override
     public void onDestroy() {
         myServiceIsActive = false;
+
+        destroyMediaPlayer();
 
         //удаляем регистрацию ресивера
         this.unregisterReceiver(this.mBatInfoReciever);
@@ -56,49 +61,41 @@ public class MyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         myServiceIsActive = true;
+        initMediaPlayer();
 
         return super.onStartCommand(intent, flags, startId);
     }
+
+
 
     // сам ресивер
      private BroadcastReceiver mBatInfoReciever = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            //делаем что то когда получено уведомление о заряде
-            //здесь нужно запустиь mp.start() если заряжается, батарея заряжена на 100%
-            // апосле отсоединения mp.stop()
-
-            //int tempInt = 0;
             int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
             int percent = intent.getIntExtra(BatteryManager.EXTRA_LEVEL,0);
             if (status==BatteryManager.BATTERY_STATUS_CHARGING) {
-                //charging = true;
 
-                //Toast.makeText(context, " Connected ", Toast.LENGTH_SHORT).show();
-                //MainActivity.textStatus.setText(String.valueOf("CHARGING"));
-                // здесь код для проигрыша звука при зарядке, и 100 % заряда предположительно
+                    Log.i("CHARGING ", String.valueOf(percent));
 
 
-                //предположительно при лупинге тру
-                    Log.i(" charging ", String.valueOf(percent));
+                    if (percent==100) {
+                        if (mp != null) {
+                            mp.start();
+                        } else {
+                            initMediaPlayer();
+                            mp.start();
+                        }
 
-
-                    // нужно копать MediaPlayer
-                    mp.start();
-
-
+                    }
 
             } else if (status == BatteryManager.BATTERY_STATUS_DISCHARGING){
-                //MainActivity.textStatus.setText(String.valueOf("DISCHARGING"));
-                // здесь код для того чтоб остановить звуковоспроизведение,
-                // т.е. когда отключат от зарядки
-                //charging = false;
-
-                Log.i(" discharging", String.valueOf(percent));
 
 
-                mp.release();
+                Log.i("DISCHARGING ", String.valueOf(percent));
+
+                destroyMediaPlayer();
 
             }
 
@@ -107,5 +104,23 @@ public class MyService extends Service {
 
 
 
+    void initMediaPlayer(){
+
+        if (mp==null) {
+            mp = MediaPlayer.create(getApplicationContext(), R.raw.walter_reed);
+        }
+        else {
+            destroyMediaPlayer();
+            initMediaPlayer();
+        }
+    }
+
+    void destroyMediaPlayer(){
+
+        if (mp!=null){
+            mp.release();
+            mp = null;
+        }
+    }
 
 }
