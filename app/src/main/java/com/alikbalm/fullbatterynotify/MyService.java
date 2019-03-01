@@ -20,7 +20,6 @@ public class MyService extends Service {
     int idRaw = R.raw.batareya_sveta;
 
     Uri UserChoiseAudioUri;
-//    boolean charging = false;
 
     public MyService() {
     }
@@ -31,6 +30,7 @@ public class MyService extends Service {
         //регистрируем ресивер
         this.registerReceiver(this.mBatInfoReciever,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
+        // регистрируем проигрываеть медиа
         initMediaPlayer();
 
 
@@ -41,6 +41,7 @@ public class MyService extends Service {
     public void onDestroy() {
         myServiceIsActive = false;
 
+        // удаляем медиа проигрыватель
         destroyMediaPlayer();
 
         //удаляем регистрацию ресивера
@@ -51,9 +52,7 @@ public class MyService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        //Log.i("My Service", " onBind");
 
-        // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -61,6 +60,7 @@ public class MyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         myServiceIsActive = true;
+        initUserChoise();
         initMediaPlayer();
 
         return super.onStartCommand(intent, flags, startId);
@@ -106,8 +106,10 @@ public class MyService extends Service {
 
     void initMediaPlayer(){
 
+
+
         if (mp==null) {
-            mp = MediaPlayer.create(getApplicationContext(), R.raw.walter_reed);
+            mp = UserChoiseAudioUri==null ? MediaPlayer.create(getApplicationContext(), idRaw) : MediaPlayer.create(getApplicationContext(),UserChoiseAudioUri);
         }
         else {
             destroyMediaPlayer();
@@ -121,6 +123,10 @@ public class MyService extends Service {
             mp.release();
             mp = null;
         }
+    }
+
+    void initUserChoise(){
+        UserChoiseAudioUri = MainActivity.uri;
     }
 
 }
