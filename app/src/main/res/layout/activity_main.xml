@@ -5,7 +5,7 @@
     android:id="@+id/constarint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/darker_gray"
+    android:background="@android:color/background_dark"
     tools:context=".MainActivity">
 
     <Button
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Start"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/stop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="stop"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/status"
         app:layout_constraintStart_toEndOf="@+id/start"
         app:layout_constraintTop_toTopOf="parent" />
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="status"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/stop"
         app:layout_constraintTop_toTopOf="parent" />
@@ -90,23 +90,45 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:text="Status"
-        android:textColor="@android:color/background_light"
-        android:textSize="18sp"
-        android:visibility="visible"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stop" />
-
-    <Button
-        android:id="@+id/browse_track"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Change track"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:text="Service is Active"
+        android:textColor="@android:color/background_light"
+        android:textSize="18sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/hor_guideline_25"
+        app:layout_constraintEnd_toStartOf="@+id/ver_guideline_75"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/serviceStatus" />
+
+    <Button
+        android:id="@+id/browse_track"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="Change Alarm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/hor_guideline_25" />
+
+    <Button
+        android:id="@+id/default_track"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="Default sound"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/browse_track" />
 
     <Button
         android:id="@+id/stop_play"
@@ -129,6 +151,40 @@
         android:text="play"
         app:layout_constraintBottom_toTopOf="@+id/stop_play"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/serviceStatus"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/hor_guideline_25"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/ver_guideline_75"
+        app:layout_constraintTop_toBottomOf="@+id/status"
+        app:srcCompat="@drawable/green" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/ver_guideline_75"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/hor_guideline_25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/hor_guideline_10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
 
 
 </android.support.constraint.ConstraintLayout>

@@ -30,8 +30,12 @@ public class MyService extends Service {
     @Override
     public void onCreate() {
 
+        myServiceIsActive = true;
+
         //регистрируем ресивер
         this.registerReceiver(this.mBatInfoReciever,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+
+
 
         initUserChoise();
         // регистрируем проигрываеть медиа
