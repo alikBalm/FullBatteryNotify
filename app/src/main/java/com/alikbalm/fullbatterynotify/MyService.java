@@ -5,11 +5,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.IBinder;
 import android.util.Log;
+
+import java.io.IOException;
 
 
 public class MyService extends Service {
@@ -30,6 +33,7 @@ public class MyService extends Service {
         //регистрируем ресивер
         this.registerReceiver(this.mBatInfoReciever,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
+        initUserChoise();
         // регистрируем проигрываеть медиа
         initMediaPlayer();
 
@@ -60,7 +64,7 @@ public class MyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         myServiceIsActive = true;
-        initUserChoise();
+
         initMediaPlayer();
 
         return super.onStartCommand(intent, flags, startId);
@@ -109,7 +113,22 @@ public class MyService extends Service {
 
 
         if (mp==null) {
-            mp = UserChoiseAudioUri==null ? MediaPlayer.create(getApplicationContext(), idRaw) : MediaPlayer.create(getApplicationContext(),UserChoiseAudioUri);
+
+            if (UserChoiseAudioUri==null){
+                mp = MediaPlayer.create(getApplicationContext(), idRaw);
+            } else {
+
+                try {
+                    mp = new MediaPlayer();
+                    mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                    mp.setDataSource(getApplicationContext(), UserChoiseAudioUri);
+                    mp.prepare();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
         }
         else {
             destroyMediaPlayer();
